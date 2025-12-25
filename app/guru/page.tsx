@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { QrReader } from 'react-qr-reader'
+import { Scanner } from '@yudiel/react-qr-scanner'
 import { supabase } from '@/lib/supabase'
 
 export default function GuruPage() {
@@ -9,11 +9,11 @@ export default function GuruPage() {
     const [loading, setLoading] = useState(false)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleScan = async (result: any, error: any) => {
-        if (!!result && !loading && nama) {
+    const handleScan = async (result: any) => {
+        if (result && result.length > 0 && !loading && nama) {
             // Cegah scan ganda (Debounce sederhana)
             setLoading(true)
-            const qrText = result?.text
+            const qrText = result[0].rawValue
 
             // Cek apakah QR ini valid (misal isinya text '7A')
             if (qrText) {
@@ -35,10 +35,6 @@ export default function GuruPage() {
 
             // Jeda 3 detik sebelum bisa scan lagi
             setTimeout(() => setLoading(false), 3000)
-        }
-
-        if (!!error) {
-            // Error kecil biarkan saja (karena kamera kadang scanning frame kosong)
         }
     }
 
@@ -68,12 +64,13 @@ export default function GuruPage() {
                             Silakan isi nama dulu untuk mengaktifkan kamera.
                         </p>
                     ) : (
-                        <QrReader
-                            onResult={handleScan}
-                            constraints={{ facingMode: 'environment' }} // Pakai kamera belakang HP
-                            className="w-full h-full object-cover"
-                            scanDelay={500}
-                        />
+                        <div className="w-full h-full">
+                            <Scanner
+                                onScan={handleScan}
+                                allowMultiple={true}
+                                scanDelay={2000}
+                            />
+                        </div>
                     )}
                 </div>
 
