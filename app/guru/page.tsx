@@ -59,6 +59,19 @@ export default function GuruPage() {
                                 <p>🔒 Ketik nama Anda di atas untuk membuka kamera.</p>
                             </div>
                         ) : (
+                            <div className="w-full h-full relative">
+                                <Scanner
+                                    onScan={handleScan}
+                                    allowMultiple={true}
+                                    scanDelay={500}
+                                    components={{
+                                        finder: false,
+                                    }}
+                                    styles={{
+                                        container: { width: '100%', height: '100%' },
+                                        video: { width: '100%', height: '100%', objectFit: 'cover' }
+                                    }}
+                                />
                                 {/* Overlay Frame Scanner */}
                                 <div className="absolute inset-0 border-[40px] border-black/50 flex items-center justify-center pointer-events-none">
                                     <div className="w-48 h-48 border-4 border-green-500 rounded-lg animate-pulse relative">
@@ -83,7 +96,7 @@ export default function GuruPage() {
                 <Link href="/" className="mt-8 text-gray-400 text-sm hover:text-gray-600">
                     ← Kembali ke Halaman Depan
                 </Link>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }
