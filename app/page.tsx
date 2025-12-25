@@ -12,7 +12,7 @@ export default function Home() {
         </div>
 
         <h1 className="text-4xl font-bold mb-2">ABSENSI DIGITAL</h1>
-        <p className="text-xl mb-10 opacity-90">MTs Labuhan Batu - Sumatera Utara</p>
+        <p className="text-xl mb-10 opacity-90">MTS Negeri 1 Labuhan Batu</p>
 
         <div className="space-y-4 w-full">
           <Link href="/guru" className="block w-full bg-white text-green-800 font-bold py-4 rounded-xl shadow-lg hover:bg-gray-100 hover:scale-105 transition-transform flex items-center justify-center gap-3">
@@ -24,7 +24,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <p className="mt-12 text-sm opacity-60">System by Ghozali Tech &copy; 2025</p>
+        <p className="mt-12 text-sm opacity-60">System by Santri Lawas Dev</p>
       </div>
     </div>
   )
