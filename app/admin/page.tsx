@@ -28,14 +28,33 @@ export default function AdminPage() {
             .channel('realtime-logs')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'absensi_logs' }, (payload) => {
                 setLogs((current) => [payload.new as Log, ...current])
-                    < h1 className = "text-xl font-bold flex items-center gap-2" >
+            })
+            .subscribe()
+
+        return () => { supabase.removeChannel(channel) }
+    }, [])
+
+    // Fungsi biar link QR yang panjang jadi pendek (tapi tetap kelihatan isinya)
+    const formatKelas = (text: string) => {
+        if (!text) return '-'
+        // Kalau link kepanjangan, potong dikit biar tabel gak meledak
+        if (text.length > 50) return text.substring(0, 47) + '...'
+        return text
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-100 text-gray-800 font-sans">
+            {/* Header */}
+            <nav className="bg-green-700 text-white p-4 shadow-md sticky top-0 z-50">
+                <div className="max-w-6xl mx-auto flex justify-between items-center">
+                    <h1 className="text-xl font-bold flex items-center gap-2">
                         <span>🏫</span> MONITORING PIKET
-                    </h1 >
-            <span className="text-sm bg-green-800 px-3 py-1 rounded-full animate-pulse">
-                🟢 Live Connection
-            </span>
-                </div >
-            </nav >
+                    </h1>
+                    <span className="text-sm bg-green-800 px-3 py-1 rounded-full animate-pulse">
+                        🟢 Live Connection
+                    </span>
+                </div>
+            </nav>
 
             <main className="max-w-6xl mx-auto p-6">
                 <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
@@ -88,6 +107,6 @@ export default function AdminPage() {
                     </div>
                 </div>
             </main>
-        </div >
+        </div>
     )
 }
