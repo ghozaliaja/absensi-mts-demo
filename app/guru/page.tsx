@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
@@ -9,10 +9,19 @@ export default function GuruPage() {
     const [scanResult, setScanResult] = useState('')
     const [loading, setLoading] = useState(false)
 
+    // Gunakan useRef untuk lock yang sinkron (anti-jebol)
+    const isProcessing = useRef(false)
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleScan = async (result: any) => {
-        if (result && result.length > 0 && !loading && nama) {
+        if (result && result.length > 0 && nama) {
+            // Cek lock ref, kalau sedang processing, stop.
+            if (isProcessing.current) return
+
+            // Aktifkan lock
+            isProcessing.current = true
             setLoading(true)
+
             const qrText = result[0].rawValue
 
             if (qrText) {
@@ -25,7 +34,12 @@ export default function GuruPage() {
                     alert(`✅ Berhasil! Data terkirim ke Piket.`)
                 }
             }
-            setTimeout(() => setLoading(false), 3000)
+
+            // Buka lock setelah 3 detik
+            setTimeout(() => {
+                isProcessing.current = false
+                setLoading(false)
+            }, 3000)
         }
     }
 
@@ -63,7 +77,7 @@ export default function GuruPage() {
                                 <Scanner
                                     onScan={handleScan}
                                     allowMultiple={true}
-                                    scanDelay={500}
+                                    scanDelay={2000} // Tambah delay biar gak terlalu agresif
                                     components={{
                                         finder: false,
                                     }}
