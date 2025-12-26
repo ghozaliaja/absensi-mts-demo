@@ -5,9 +5,9 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-teal-800 flex flex-col items-center justify-center p-4 text-white">
       <div className="text-center max-w-lg">
         <div className="mb-6">
-          {/* Ceritanya ini Logo Sekolah */}
-          <div className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg">
-            <span className="text-4xl">🏫</span>
+          {/* Logo Sekolah */}
+          <div className="w-24 h-24 mx-auto flex items-center justify-center drop-shadow-2xl hover:scale-110 transition-transform duration-500">
+            <img src="/logo.png" alt="Logo MTS" className="w-full h-full object-contain" />
           </div>
         </div>
 

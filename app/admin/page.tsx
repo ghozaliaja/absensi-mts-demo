@@ -147,8 +147,8 @@ export default function AdminPage() {
             {/* HEADER */}
             <header className="flex justify-between items-center bg-gray-900 px-6 py-2 rounded-lg border-b-2 border-green-600 mb-3 shrink-0">
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-xl shadow-lg shadow-green-500/50">
-                        🏫
+                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center shadow-lg border border-white/20 p-1">
+                        <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                     </div>
                     <div>
                         <h1 className="text-xl font-bold tracking-wider text-gray-100">MONITORING KBM</h1>

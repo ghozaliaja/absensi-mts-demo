@@ -137,6 +137,9 @@ export default function GuruPage() {
             <div className="min-h-screen bg-green-900 flex items-center justify-center p-4">
                 <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm">
                     <div className="text-center mb-6">
+                        <div className="flex justify-center mb-4">
+                            <img src="/logo.png" alt="Logo" className="w-20 h-20 object-contain drop-shadow-md" />
+                        </div>
                         <h1 className="text-2xl font-bold text-green-800">LOGIN GURU</h1>
                         <p className="text-gray-500 text-sm">Absensi Digital MTs</p>
                     </div>

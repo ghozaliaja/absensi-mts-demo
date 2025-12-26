@@ -34,7 +34,10 @@ export default function CetakQRPage() {
                         />
 
                         <p className="text-xs text-gray-500 font-mono">SCAN UNTUK ABSEN</p>
-                        <p className="text-[10px] text-gray-400 mt-1">MTS NEGERI 1 LABUHAN BATU</p>
+                        <div className="flex items-center justify-center gap-1 mt-1 opacity-50">
+                            <img src="/logo.png" alt="Logo" className="w-3 h-3 object-contain" />
+                            <p className="text-[10px] text-gray-400">MTS NEGERI 1 LABUHAN BATU</p>
+                        </div>
                     </div>
                 ))}
             </div>
