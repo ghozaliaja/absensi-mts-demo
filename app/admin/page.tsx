@@ -9,11 +9,56 @@ interface Log {
     kelas: string
 }
 
+interface JadwalItem {
+    ke: number | string
+    start: string
+    end: string
+}
+
 export default function AdminPage() {
+    // 1. CONFIG: 35 RUANGAN
+    const daftarKelas = [
+        '7A', '7B', '7C', '7D', '7E', '7F', '7G', '7H', '7I', '7J', '7K',
+        '8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I',
+        '9A', '9B', '9C', '9D', '9E', '9F', '9G', '9H', '9I', '9J', '9K',
+        'LAB 1', 'LAB 2', 'LAB 3', 'LAB 4'
+    ]
+
+    // 2. CONFIG: JADWAL (SENIN-KAMIS)
+    // Format HH:MM (24 Jam)
+    const jadwal: JadwalItem[] = [
+        { ke: 1, start: '07:45', end: '08:25' },
+        { ke: 2, start: '08:25', end: '09:05' },
+        { ke: 3, start: '09:05', end: '09:45' },
+        { ke: 'ISTIRAHAT 1', start: '09:45', end: '10:00' },
+        { ke: 4, start: '10:00', end: '10:40' },
+        { ke: 5, start: '10:40', end: '11:20' },
+        { ke: 6, start: '11:20', end: '12:00' },
+        { ke: 'ISTIRAHAT 2', start: '12:00', end: '12:30' },
+        { ke: 7, start: '12:30', end: '13:10' },
+        { ke: 8, start: '13:10', end: '13:50' },
+    ]
+
     const [logs, setLogs] = useState<Log[]>([])
+    const [jamSekarang, setJamSekarang] = useState<JadwalItem | null>(null) // Info Jam Ke-berapa
+    const [waktuServer, setWaktuServer] = useState('')
+
+    // Fungsi Cek Jam Pelajaran Sekarang
+    const cekJadwalAktif = () => {
+        const now = new Date()
+        const jamMenit = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
+        setWaktuServer(jamMenit)
+
+        const jadwalAktif = jadwal.find(j => jamMenit >= j.start && jamMenit < j.end)
+        setJamSekarang(jadwalAktif || null)
+    }
 
     useEffect(() => {
-        // Ambil data awal
+        // Timer buat update jam setiap detik
+        const timer = setInterval(cekJadwalAktif, 1000)
+        cekJadwalAktif()
+
+        // Ambil Data Logs
         const fetchLogs = async () => {
             const { data } = await supabase
                 .from('absensi_logs')
@@ -31,81 +76,118 @@ export default function AdminPage() {
             })
             .subscribe()
 
-        return () => { supabase.removeChannel(channel) }
+        return () => {
+            supabase.removeChannel(channel)
+            clearInterval(timer)
+        }
     }, [])
 
-    // Fungsi biar link QR yang panjang jadi pendek (tapi tetap kelihatan isinya)
-    const formatKelas = (text: string) => {
-        if (!text) return '-'
-        // Kalau link kepanjangan, potong dikit biar tabel gak meledak
-        if (text.length > 50) return text.substring(0, 47) + '...'
-        return text
+    // 3. LOGIKA UTAMA: Filter Data Sesuai Jam
+    const getStatusKelas = (namaKelas: string) => {
+        // Kalau diluar jam pelajaran (atau istirahat), semua dianggap kosong
+        if (!jamSekarang || typeof jamSekarang.ke === 'string') {
+            return { status: 'KOSONG', guru: '', jam: '' }
+        }
+
+        // Cari log yang masuk HANYA di rentang jam pelajaran aktif
+        // Kita bandingkan jam log dengan jam start jadwal aktif
+        const logAktif = logs.find(log => {
+            const logTime = new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
+            return log.kelas === namaKelas && logTime >= jamSekarang.start && logTime < jamSekarang.end
+        })
+
+        if (logAktif) {
+            return {
+                status: 'ISI',
+                guru: logAktif.guru_nama,
+                jam: new Date(logAktif.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            }
+        }
+        return { status: 'KOSONG', guru: '', jam: '' }
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 text-gray-800 font-sans">
-            {/* Header */}
-            <nav className="bg-green-700 text-white p-4 shadow-md sticky top-0 z-50">
-                <div className="max-w-6xl mx-auto flex justify-between items-center">
-                    <h1 className="text-xl font-bold flex items-center gap-2">
-                        <span>🏫</span> MONITORING PIKET
-                    </h1>
-                    <span className="text-sm bg-green-800 px-3 py-1 rounded-full animate-pulse">
-                        🟢 Live Connection
-                    </span>
-                </div>
-            </nav>
+        <div className="h-screen w-screen bg-gray-950 text-white flex flex-col p-2 overflow-hidden font-sans">
 
-            <main className="max-w-6xl mx-auto p-6">
-                <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                        <h2 className="text-xl font-bold text-gray-700">Data Kehadiran Hari Ini</h2>
-                        <span className="text-gray-500 text-sm">Total: {logs.length} Guru</span>
+            {/* HEADER */}
+            <header className="flex justify-between items-center bg-gray-900 px-6 py-2 rounded-lg border-b-2 border-green-600 mb-2 shrink-0">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-xl shadow-lg shadow-green-500/50">
+                        🏫
                     </div>
+                    <div>
+                        <h1 className="text-xl font-bold tracking-wider text-gray-100">MONITORING KBM</h1>
+                        {/* Info Jam Ke Berapa */}
+                        <p className="text-sm font-bold text-yellow-400">
+                            {jamSekarang
+                                ? (typeof jamSekarang.ke === 'string' ? `☕ ${jamSekarang.ke}` : `📚 JAM PELAJARAN KE-${jamSekarang.ke} (${jamSekarang.start} - ${jamSekarang.end})`)
+                                : '⛔ DILUAR JAM KBM'
+                            }
+                        </p>
+                    </div>
+                </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-gray-50 text-gray-600 uppercase text-sm tracking-wider">
-                                <tr>
-                                    <th className="px-6 py-4">Jam</th>
-                                    <th className="px-6 py-4">Nama Guru</th>
-                                    <th className="px-6 py-4">Lokasi / Kelas</th>
-                                    <th className="px-6 py-4">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {logs.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="text-center py-12 text-gray-400 italic">
-                                            Belum ada data masuk... Menunggu scan...
-                                        </td>
-                                    </tr>
+                <div className="text-right">
+                    <div className="text-3xl font-mono font-bold text-green-400 leading-none">
+                        {waktuServer}
+                    </div>
+                    <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">
+                        {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
+                </div>
+            </header>
+
+            {/* MAIN GRID */}
+            <main className="flex-1 grid grid-cols-7 grid-rows-5 gap-2 pb-1">
+                {daftarKelas.map((kelas) => {
+                    const info = getStatusKelas(kelas)
+                    const isIsi = info.status === 'ISI'
+                    // Kalau lagi istirahat atau diluar jam, kotak jadi abu gelap
+                    const isInactive = !jamSekarang || typeof jamSekarang.ke === 'string'
+
+                    return (
+                        <div
+                            key={kelas}
+                            className={`
+                relative rounded-lg border-l-4 shadow-lg flex flex-col items-center justify-center p-1 transition-all duration-700
+                ${isIsi
+                                    ? 'bg-gradient-to-br from-green-800 to-green-900 border-green-400 scale-[1.02] shadow-green-900/50 z-10'
+                                    : (isInactive ? 'bg-gray-900 border-gray-800 opacity-40' : 'bg-gray-800 border-red-900/50 opacity-80')
+                                }
+              `}
+                        >
+                            <div className={`absolute text-4xl font-black select-none ${isIsi ? 'text-green-500/20' : 'text-gray-700/20'}`}>
+                                {kelas}
+                            </div>
+
+                            <div className="z-10 text-center w-full">
+                                <div className={`absolute top-1 right-2 text-xs font-bold px-2 py-0.5 rounded ${isIsi ? 'bg-black/30 text-green-300' : 'bg-black/20 text-gray-500'}`}>
+                                    {kelas}
+                                </div>
+
+                                {isIsi ? (
+                                    <>
+                                        <div className="mb-1"><span className="text-[10px] bg-green-500 text-black font-bold px-2 py-0.5 rounded-full animate-pulse">HADIR</span></div>
+                                        <h2 className="text-sm md:text-base font-bold text-white leading-tight line-clamp-2 px-1">{info.guru}</h2>
+                                        <p className="text-[10px] text-green-200 mt-1 font-mono">🕒 {info.jam}</p>
+                                    </>
                                 ) : (
-                                    logs.map((log) => (
-                                        <tr key={log.id} className="hover:bg-green-50 transition-colors group">
-                                            <td className="px-6 py-4 text-gray-500 font-mono text-sm">
-                                                {new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                                            </td>
-                                            <td className="px-6 py-4 font-bold text-gray-800 text-lg group-hover:text-green-700">
-                                                {log.guru_nama}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm font-medium border border-gray-200">
-                                                    {formatKelas(log.kelas)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200 flex items-center w-fit gap-1">
-                                                    ✅ HADIR
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    <div className="flex flex-col items-center">
+                                        {/* Tampilkan status beda kalau lagi istirahat */}
+                                        {isInactive ? (
+                                            <span className="text-[10px] text-gray-600 uppercase tracking-widest mt-4">OFFLINE</span>
+                                        ) : (
+                                            <>
+                                                <span className="text-2xl text-red-900/50 mb-1">✕</span>
+                                                <span className="text-[10px] text-red-800/60 uppercase tracking-widest">KOSONG</span>
+                                            </>
+                                        )}
+                                    </div>
                                 )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    )
+                })}
             </main>
         </div>
     )
