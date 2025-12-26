@@ -142,10 +142,10 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="h-screen w-screen bg-gray-950 text-white flex flex-col p-2 overflow-hidden font-sans">
+        <div className="h-screen w-screen bg-gray-950 text-white flex flex-col p-4 overflow-hidden font-sans">
 
             {/* HEADER */}
-            <header className="flex justify-between items-center bg-gray-900 px-6 py-2 rounded-lg border-b-2 border-green-600 mb-2 shrink-0">
+            <header className="flex justify-between items-center bg-gray-900 px-6 py-2 rounded-lg border-b-2 border-green-600 mb-3 shrink-0">
                 <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-xl shadow-lg shadow-green-500/50">
                         🏫
@@ -178,7 +178,7 @@ export default function AdminPage() {
             </header>
 
             {/* MAIN GRID */}
-            <main className="flex-1 grid grid-cols-7 grid-rows-5 gap-2 pb-1">
+            <main className="flex-1 grid grid-cols-7 grid-rows-5 gap-3 pb-1">
                 {daftarKelas.map((kelas) => {
                     const info = getStatusKelas(kelas)
                     const isIsi = info.status === 'ISI'
