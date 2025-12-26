@@ -143,13 +143,39 @@ export default function AdminPage() {
 
             // Cek Jam Mulai Log
             const logTime = logDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
-            const jadwalLog = jadwalHariIni.find(j => logTime >= j.start && logTime < j.end)
+            const jadwalLogIndex = jadwalHariIni.findIndex(j => logTime >= j.start && logTime < j.end)
 
-            if (!jadwalLog || typeof jadwalLog.ke === 'string') return false // Log diluar jam pelajaran / pas istirahat
+            if (jadwalLogIndex === -1) return false // Log diluar jam pelajaran
+
+            const jadwalLog = jadwalHariIni[jadwalLogIndex]
+            if (typeof jadwalLog.ke === 'string') return false // Log pas istirahat dianggap tidak valid untuk KBM
 
             const startKe = jadwalLog.ke as number
-            const durasi = log.durasi_jp || 1 // Default 1 JP kalau tidak ada data
-            const endKe = startKe + durasi - 1
+            const durasi = log.durasi_jp || 1
+
+            // HITUNG END KE (Dengan Logika "Tidak Boleh Nyebrang Istirahat")
+            let validDuration = 0
+            let currentScheduleIndex = jadwalLogIndex
+
+            // Loop untuk mengecek apakah durasi terpotong istirahat
+            while (validDuration < durasi) {
+                // Cek apakah index masih dalam range jadwal
+                if (currentScheduleIndex >= jadwalHariIni.length) break
+
+                const item = jadwalHariIni[currentScheduleIndex]
+
+                // Kalau ketemu ISTIRAHAT, stop perpanjangan durasi
+                if (typeof item.ke === 'string') {
+                    break
+                }
+
+                // Kalau ini jam pelajaran valid, tambah hitungan
+                validDuration++
+                currentScheduleIndex++
+            }
+
+            // End Ke adalah start + validDuration - 1
+            const endKe = startKe + validDuration - 1
 
             // Cek apakah Jam Sekarang masih dalam rentang [startKe, endKe]
             return currentKe >= startKe && currentKe <= endKe
