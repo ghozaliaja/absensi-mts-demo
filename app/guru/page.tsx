@@ -90,15 +90,15 @@ export default function GuruPage() {
             return alert("Password salah! Coba: 123456")
         }
 
-        // Validasi Lokasi
-        if (distance === null) {
-            checkLocation()
-            return alert("Sedang mengambil lokasi... Tunggu sebentar.")
-        }
+        // Validasi Lokasi (DINONAKTIFKAN SEMENTARA)
+        // if (distance === null) {
+        //     checkLocation()
+        //     return alert("Sedang mengambil lokasi... Tunggu sebentar.")
+        // }
 
-        if (distance > MAX_DISTANCE_METERS) {
-            return alert(`❌ KEJAUHAN! \n\nJarak Anda: ${Math.round(distance)} meter dari sekolah.\nBatas Maksimal: ${MAX_DISTANCE_METERS} meter.\n\nSilakan merapat ke sekolah dulu Tadz!`)
-        }
+        // if (distance > MAX_DISTANCE_METERS) {
+        //     return alert(`❌ KEJAUHAN! \n\nJarak Anda: ${Math.round(distance)} meter dari sekolah.\nBatas Maksimal: ${MAX_DISTANCE_METERS} meter.\n\nSilakan merapat ke sekolah dulu Tadz!`)
+        // }
 
         // Lolos semua cek
         setStep('SCAN')
@@ -141,20 +141,11 @@ export default function GuruPage() {
                         <p className="text-gray-500 text-sm">Absensi Digital MTs</p>
                     </div>
 
-                    {/* Info Lokasi */}
-                    <div className={`mb-6 p-3 rounded-lg text-sm text-center ${locationError ? 'bg-red-100 text-red-700' :
-                            (distance !== null && distance <= MAX_DISTANCE_METERS) ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                        {isCheckingLocation ? '📡 Mencari Lokasi...' :
-                            locationError ? locationError :
-                                distance !== null ? (
-                                    <>
-                                        <p className="font-bold">{distance <= MAX_DISTANCE_METERS ? '✅ LOKASI AMAN' : '❌ DILUAR JANGKAUAN'}</p>
-                                        <p className="text-xs mt-1">Jarak: {Math.round(distance)}m dari Titik Pusat</p>
-                                    </>
-                                ) : 'Menunggu GPS...'}
-
-                        <button onClick={checkLocation} className="text-xs underline mt-2 block w-full">Refresh GPS</button>
+                    {/* Info Lokasi (MODE DEBUG) */}
+                    <div className="mb-6 p-3 rounded-lg text-sm text-center bg-blue-100 text-blue-700 border border-blue-200">
+                        <p className="font-bold">🚧 MODE UJI COBA</p>
+                        <p className="text-xs mt-1">Validasi Lokasi: NON-AKTIF</p>
+                        {distance !== null && <p className="text-[10px] mt-1 opacity-70">Jarak: {Math.round(distance)}m</p>}
                     </div>
 
                     <div className="space-y-4">
@@ -185,11 +176,7 @@ export default function GuruPage() {
 
                         <button
                             onClick={handleLogin}
-                            disabled={isCheckingLocation || (distance !== null && distance > MAX_DISTANCE_METERS)}
-                            className={`w-full font-bold py-3 rounded-lg transition-all shadow-lg active:scale-95 ${(distance !== null && distance <= MAX_DISTANCE_METERS)
-                                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                                    : 'bg-gray-400 cursor-not-allowed text-gray-200'
-                                }`}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg active:scale-95"
                         >
                             MASUK SISTEM 🚀
                         </button>
