@@ -22,6 +22,10 @@ export default function Home() {
           <Link href="/admin" className="block w-full bg-green-900/50 border-2 border-green-400/30 text-white font-semibold py-4 rounded-xl hover:bg-green-900 hover:border-green-400 transition-colors flex items-center justify-center gap-3">
             🖥️ MONITOR PIKET (ADMIN)
           </Link>
+
+          <Link href="/info" className="block w-full bg-blue-900/50 border-2 border-blue-400/30 text-white font-semibold py-4 rounded-xl hover:bg-blue-900 hover:border-blue-400 transition-colors flex items-center justify-center gap-3">
+            ℹ️ PAPAN INFORMASI DIGITAL
+          </Link>
         </div>
 
         <p className="mt-12 text-sm opacity-60">System by Santri Lawas Dev</p>
