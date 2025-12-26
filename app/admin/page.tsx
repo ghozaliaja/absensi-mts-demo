@@ -142,47 +142,61 @@ export default function AdminPage() {
                 {daftarKelas.map((kelas) => {
                     const info = getStatusKelas(kelas)
                     const isIsi = info.status === 'ISI'
-                    // Kalau lagi istirahat atau diluar jam, kotak jadi abu gelap
                     const isInactive = !jamSekarang || typeof jamSekarang.ke === 'string'
 
                     return (
                         <div
                             key={kelas}
                             className={`
-                relative rounded-lg border-l-4 shadow-lg flex flex-col items-center justify-center p-1 transition-all duration-700
-                ${isIsi
-                                    ? 'bg-gradient-to-br from-green-800 to-green-900 border-green-400 scale-[1.02] shadow-green-900/50 z-10'
-                                    : (isInactive ? 'bg-gray-900 border-gray-800 opacity-40' : 'bg-gray-800 border-red-900/50 opacity-80')
+                                relative rounded-lg border-2 shadow-lg flex flex-col overflow-hidden
+                                ${isIsi
+                                    ? 'bg-gray-800 border-green-500 shadow-green-900/50'
+                                    : (isInactive ? 'bg-gray-900 border-gray-800 opacity-40' : 'bg-gray-800 border-red-900/50')
                                 }
-              `}
+                            `}
                         >
-                            <div className={`absolute text-4xl font-black select-none ${isIsi ? 'text-green-500/20' : 'text-gray-700/20'}`}>
-                                {kelas}
+                            {/* BAGIAN ATAS: NAMA KELAS */}
+                            <div className="bg-gray-900/50 border-b border-white/10 py-1 text-center">
+                                <span className="text-lg font-black text-gray-300 tracking-wider">{kelas}</span>
                             </div>
 
-                            <div className="z-10 text-center w-full">
-                                <div className={`absolute top-1 right-2 text-xs font-bold px-2 py-0.5 rounded ${isIsi ? 'bg-black/30 text-green-300' : 'bg-black/20 text-gray-500'}`}>
-                                    {kelas}
-                                </div>
-
-                                {isIsi ? (
-                                    <>
-                                        <div className="mb-1"><span className="text-[10px] bg-green-500 text-black font-bold px-2 py-0.5 rounded-full animate-pulse">HADIR</span></div>
-                                        <h2 className="text-sm md:text-base font-bold text-white leading-tight line-clamp-2 px-1">{info.guru}</h2>
-                                        <p className="text-[10px] text-green-200 mt-1 font-mono">🕒 {info.jam}</p>
-                                    </>
-                                ) : (
-                                    <div className="flex flex-col items-center">
-                                        {/* Tampilkan status beda kalau lagi istirahat */}
-                                        {isInactive ? (
-                                            <span className="text-[10px] text-gray-600 uppercase tracking-widest mt-4">OFFLINE</span>
-                                        ) : (
-                                            <>
-                                                <span className="text-2xl text-red-900/50 mb-1">✕</span>
-                                                <span className="text-[10px] text-red-800/60 uppercase tracking-widest">KOSONG</span>
-                                            </>
-                                        )}
+                            {/* BAGIAN TENGAH: INDIKATOR LINGKARAN */}
+                            <div className="flex-1 flex items-center justify-center bg-gray-800/50 relative">
+                                {isInactive ? (
+                                    <div className="w-8 h-8 rounded-full bg-gray-700 border-2 border-gray-600 flex items-center justify-center">
+                                        <span className="text-xs text-gray-500">OFF</span>
                                     </div>
+                                ) : (
+                                    <div className={`
+                                        w-10 h-10 rounded-full border-4 flex items-center justify-center shadow-lg transition-all duration-500
+                                        ${isIsi
+                                            ? 'bg-green-500 border-green-300 shadow-green-500/50 scale-110'
+                                            : 'bg-red-900/20 border-red-800 shadow-red-900/20'
+                                        }
+                                    `}>
+                                        {isIsi && <span className="text-white text-xs font-bold">✓</span>}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* BAGIAN BAWAH: NAMA GURU */}
+                            <div className={`
+                                py-2 px-1 text-center border-t min-h-[40px] flex items-center justify-center
+                                ${isIsi ? 'bg-green-900/30 border-green-500/30' : 'bg-gray-900/30 border-white/5'}
+                            `}>
+                                {isIsi ? (
+                                    <div className="flex flex-col">
+                                        <span className="text-xs md:text-sm font-bold text-white leading-tight line-clamp-1">
+                                            {info.guru}
+                                        </span>
+                                        <span className="text-[9px] text-green-300 font-mono mt-0.5">
+                                            {info.jam}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span className="text-[10px] text-gray-600 uppercase tracking-widest font-semibold">
+                                        {isInactive ? '-' : 'KOSONG'}
+                                    </span>
                                 )}
                             </div>
                         </div>
