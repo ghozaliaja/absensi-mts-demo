@@ -7,6 +7,7 @@ interface Log {
     created_at: string
     guru_nama: string
     kelas: string
+    durasi_jp?: number // Tambahan field durasi
 }
 
 interface JadwalItem {
@@ -117,18 +118,41 @@ export default function AdminPage() {
         }
     }, [])
 
-    // 3. LOGIKA UTAMA: Filter Data Sesuai Jam
+    // 3. LOGIKA UTAMA: Filter Data Sesuai Jam & Durasi JP
     const getStatusKelas = (namaKelas: string) => {
         // Kalau diluar jam pelajaran (atau istirahat), semua dianggap kosong
         if (!jamSekarang || typeof jamSekarang.ke === 'string') {
             return { status: 'KOSONG', guru: '', jam: '' }
         }
 
-        // Cari log yang masuk HANYA di rentang jam pelajaran aktif
-        // Kita bandingkan jam log dengan jam start jadwal aktif
+        const jadwalHariIni = getJadwalHariIni()
+        const currentKe = jamSekarang.ke as number
+
+        // Cari log yang valid untuk kelas ini
         const logAktif = logs.find(log => {
-            const logTime = new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
-            return log.kelas === namaKelas && logTime >= jamSekarang.start && logTime < jamSekarang.end
+            if (log.kelas !== namaKelas) return false
+
+            // Cek apakah log dibuat HARI INI
+            const logDate = new Date(log.created_at)
+            const today = new Date()
+            if (logDate.getDate() !== today.getDate() ||
+                logDate.getMonth() !== today.getMonth() ||
+                logDate.getFullYear() !== today.getFullYear()) {
+                return false
+            }
+
+            // Cek Jam Mulai Log
+            const logTime = logDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
+            const jadwalLog = jadwalHariIni.find(j => logTime >= j.start && logTime < j.end)
+
+            if (!jadwalLog || typeof jadwalLog.ke === 'string') return false // Log diluar jam pelajaran / pas istirahat
+
+            const startKe = jadwalLog.ke as number
+            const durasi = log.durasi_jp || 1 // Default 1 JP kalau tidak ada data
+            const endKe = startKe + durasi - 1
+
+            // Cek apakah Jam Sekarang masih dalam rentang [startKe, endKe]
+            return currentKe >= startKe && currentKe <= endKe
         })
 
         if (logAktif) {
