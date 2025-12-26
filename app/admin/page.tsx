@@ -153,12 +153,17 @@ export default function AdminPage() {
                     <div>
                         <h1 className="text-xl font-bold tracking-wider text-gray-100">MONITORING KBM</h1>
                         {/* Info Jam Ke Berapa */}
-                        <p className="text-sm font-bold text-yellow-400">
-                            {jamSekarang
-                                ? (typeof jamSekarang.ke === 'string' ? `☕ ${jamSekarang.ke}` : `📚 JAM PELAJARAN KE-${jamSekarang.ke} (${jamSekarang.start} - ${jamSekarang.end})`)
-                                : '⛔ DILUAR JAM KBM'
-                            }
-                        </p>
+                        <div className="flex items-center gap-3">
+                            <p className="text-sm font-bold text-yellow-400">
+                                {jamSekarang
+                                    ? (typeof jamSekarang.ke === 'string' ? `☕ ${jamSekarang.ke}` : `📚 JAM PELAJARAN KE-${jamSekarang.ke} (${jamSekarang.start} - ${jamSekarang.end})`)
+                                    : '⛔ DILUAR JAM KBM'
+                                }
+                            </p>
+                            <a href="/cetak-qr" target="_blank" className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded border border-white/20 transition-colors">
+                                🖨️ CETAK QR
+                            </a>
+                        </div>
                     </div>
                 </div>
 
