@@ -11,7 +11,7 @@ export default function Home() {
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold mb-2">ABSENSI DIGITAL</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 uppercase leading-tight">ABSENSI DIGITAL MONITORING KBM PERKELAS</h1>
         <p className="text-xl mb-10 opacity-90">MTS Negeri 1 Labuhan Batu</p>
 
         <div className="space-y-4 w-full">
