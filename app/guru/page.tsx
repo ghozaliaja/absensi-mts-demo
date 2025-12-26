@@ -1,11 +1,15 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
 export default function GuruPage() {
-    // SIMULASI DATABASE GURU (Hardcode buat Demo)
+    // 1. CONFIG: KOORDINAT SEKOLAH (MTS Negeri 1 Labuhan Batu)
+    const SCHOOL_LAT = 2.0964
+    const SCHOOL_LNG = 99.8376
+    const MAX_DISTANCE_METERS = 100 // Radius toleransi (meter)
+
     const daftarGuru = [
         "Ust. Kamal",
         "Ust. Toni",
@@ -20,22 +24,86 @@ export default function GuruPage() {
     const [scanResult, setScanResult] = useState('')
     const [loading, setLoading] = useState(false)
 
-    // Lock untuk mencegah double scan
+    // State Lokasi
+    const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null)
+    const [distance, setDistance] = useState<number | null>(null)
+    const [locationError, setLocationError] = useState('')
+    const [isCheckingLocation, setIsCheckingLocation] = useState(false)
+
     const isProcessing = useRef(false)
 
-    // 1. FUNGSI LOGIN BOONGAN
+    // Fungsi Hitung Jarak (Haversine Formula)
+    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+        const R = 6371e3 // Radius bumi dalam meter
+        const φ1 = lat1 * Math.PI / 180
+        const φ2 = lat2 * Math.PI / 180
+        const Δφ = (lat2 - lat1) * Math.PI / 180
+        const Δλ = (lon2 - lon1) * Math.PI / 180
+
+        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        return R * c // Hasil dalam meter
+    }
+
+    // Fungsi Cek Lokasi Realtime
+    const checkLocation = () => {
+        setIsCheckingLocation(true)
+        setLocationError('')
+
+        if (!navigator.geolocation) {
+            setLocationError('Browser tidak mendukung Geolocation')
+            setIsCheckingLocation(false)
+            return
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords
+                setUserLocation({ lat: latitude, lng: longitude })
+
+                const dist = calculateDistance(latitude, longitude, SCHOOL_LAT, SCHOOL_LNG)
+                setDistance(dist)
+                setIsCheckingLocation(false)
+            },
+            (error) => {
+                console.error(error)
+                setLocationError('Gagal mengambil lokasi. Pastikan GPS aktif!')
+                setIsCheckingLocation(false)
+            },
+            { enableHighAccuracy: true }
+        )
+    }
+
+    // Cek lokasi pas pertama buka
+    useEffect(() => {
+        checkLocation()
+    }, [])
+
     const handleLogin = () => {
         if (!selectedGuru) return alert("Pilih nama guru dulu Tadz!")
 
-        // Password universal buat demo
-        if (password === '123456') {
-            setStep('SCAN')
-        } else {
-            alert("Password salah! Coba: 123456")
+        // Validasi Password
+        if (password !== '123456') {
+            return alert("Password salah! Coba: 123456")
         }
+
+        // Validasi Lokasi
+        if (distance === null) {
+            checkLocation()
+            return alert("Sedang mengambil lokasi... Tunggu sebentar.")
+        }
+
+        if (distance > MAX_DISTANCE_METERS) {
+            return alert(`❌ KEJAUHAN! \n\nJarak Anda: ${Math.round(distance)} meter dari sekolah.\nBatas Maksimal: ${MAX_DISTANCE_METERS} meter.\n\nSilakan merapat ke sekolah dulu Tadz!`)
+        }
+
+        // Lolos semua cek
+        setStep('SCAN')
     }
 
-    // 2. FUNGSI SCAN (Updated with @yudiel/react-qr-scanner logic)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleScan = async (result: any) => {
         if (result && result.length > 0 && selectedGuru) {
@@ -48,7 +116,6 @@ export default function GuruPage() {
 
             if (qrText) {
                 setScanResult(qrText)
-                // Kirim nama guru yang sudah "Login"
                 const { error: insertError } = await supabase
                     .from('absensi_logs')
                     .insert([{ guru_nama: selectedGuru, kelas: qrText }])
@@ -58,7 +125,6 @@ export default function GuruPage() {
                 }
             }
 
-            // Delay sebelum bisa scan lagi
             setTimeout(() => {
                 isProcessing.current = false
                 setLoading(false)
@@ -66,7 +132,6 @@ export default function GuruPage() {
         }
     }
 
-    // TAMPILAN 1: HALAMAN LOGIN
     if (step === 'LOGIN') {
         return (
             <div className="min-h-screen bg-green-900 flex items-center justify-center p-4">
@@ -74,6 +139,22 @@ export default function GuruPage() {
                     <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold text-green-800">LOGIN GURU</h1>
                         <p className="text-gray-500 text-sm">Absensi Digital MTs</p>
+                    </div>
+
+                    {/* Info Lokasi */}
+                    <div className={`mb-6 p-3 rounded-lg text-sm text-center ${locationError ? 'bg-red-100 text-red-700' :
+                            (distance !== null && distance <= MAX_DISTANCE_METERS) ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                        {isCheckingLocation ? '📡 Mencari Lokasi...' :
+                            locationError ? locationError :
+                                distance !== null ? (
+                                    <>
+                                        <p className="font-bold">{distance <= MAX_DISTANCE_METERS ? '✅ LOKASI AMAN' : '❌ DILUAR JANGKAUAN'}</p>
+                                        <p className="text-xs mt-1">Jarak: {Math.round(distance)}m dari Titik Pusat</p>
+                                    </>
+                                ) : 'Menunggu GPS...'}
+
+                        <button onClick={checkLocation} className="text-xs underline mt-2 block w-full">Refresh GPS</button>
                     </div>
 
                     <div className="space-y-4">
@@ -104,7 +185,11 @@ export default function GuruPage() {
 
                         <button
                             onClick={handleLogin}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg active:scale-95"
+                            disabled={isCheckingLocation || (distance !== null && distance > MAX_DISTANCE_METERS)}
+                            className={`w-full font-bold py-3 rounded-lg transition-all shadow-lg active:scale-95 ${(distance !== null && distance <= MAX_DISTANCE_METERS)
+                                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                                    : 'bg-gray-400 cursor-not-allowed text-gray-200'
+                                }`}
                         >
                             MASUK SISTEM 🚀
                         </button>
@@ -118,7 +203,6 @@ export default function GuruPage() {
         )
     }
 
-    // TAMPILAN 2: HALAMAN SCANNER (Setelah Login)
     return (
         <div className="min-h-screen bg-gray-900 flex flex-col">
             <div className="bg-white p-4 shadow-md flex justify-between items-center z-10">
@@ -148,7 +232,6 @@ export default function GuruPage() {
                             video: { width: '100%', height: '100%', objectFit: 'cover' }
                         }}
                     />
-                    {/* Overlay */}
                     <div className="absolute inset-0 border-[40px] border-black/60 flex items-center justify-center pointer-events-none">
                         <div className="w-48 h-48 border-4 border-green-500 rounded-lg animate-pulse relative">
                             <div className="absolute -top-10 w-full text-center text-white font-bold text-sm shadow-black drop-shadow-md">
