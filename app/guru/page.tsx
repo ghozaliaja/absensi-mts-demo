@@ -12,80 +12,79 @@ export default function GuruPage() {
 
     // DATA GURU (ID & Password)
     const daftarGuru = [
-        { id: '101', nama: 'MUSTAFA KAMAL NASUTION, S.Pd.I, M.Pd', pass: '123456' },
-        { id: '102', nama: 'DARMAWATI SITORUS, M.Pd', pass: '123456' },
-        { id: '103', nama: 'MUHAMMAD ARIF SIAGIAN, S.Pd', pass: '123456' },
-        { id: '104', nama: 'SURYA PUTRA, S.Pd', pass: '123456' },
-        { id: '105', nama: 'AHMAD SOLEH DONGORAN, S.Ag', pass: '123456' },
-        { id: '106', nama: 'Dra. Hj. NURMAWATI, MA', pass: '123456' },
-        { id: '107', nama: 'Dra.SYAFRI YUNITA', pass: '123456' },
-        { id: '108', nama: 'Dra. NIRWANA', pass: '123456' },
-        { id: '109', nama: 'SAMSIDAR RITONGA, S.Pd', pass: '123456' },
-        { id: '110', nama: 'ELVIRA RAHMAINI, S.Pd', pass: '123456' },
-        { id: '111', nama: 'SAANIM S.Pd', pass: '123456' },
-        { id: '112', nama: 'NURBANI, M.Pd.I', pass: '123456' },
-        { id: '113', nama: 'NURMAHAYA HARAHAP, S.Pd.I', pass: '123456' },
-        { id: '114', nama: 'INATUL ZAMROH, S.Ag', pass: '123456' },
-        { id: '115', nama: 'UMMI KALSUM, S.Pd.I', pass: '123456' },
-        { id: '116', nama: 'MARHIDUN, S.Pd.I', pass: '123456' },
-        { id: '117', nama: 'RIKA VALIANTI, S.Pd', pass: '123456' },
-        { id: '118', nama: 'ROSITA, M.Pd', pass: '123456' },
-        { id: '119', nama: 'LENNI MARIA, S.Pd', pass: '123456' },
-        { id: '120', nama: 'MASDIANA NASUTION, S.Pd', pass: '123456' },
-        { id: '121', nama: 'TRINAWATI, S.Ag', pass: '123456' },
-        { id: '122', nama: 'FITRAWATI, S.Pd', pass: '123456' },
-        { id: '123', nama: 'VIVI ARIANI LUBIS, S.Pd', pass: '123456' },
-        { id: '124', nama: 'NURHASANAH NASUTION, S.Pd', pass: '123456' },
-        { id: '125', nama: 'SRI HARIANI MANURUNG S.Pd', pass: '123456' },
-        { id: '126', nama: 'SURATMIN, S.Pd', pass: '123456' },
-        { id: '127', nama: 'AFRIYENNI, S.Pd', pass: '123456' },
-        { id: '128', nama: 'H. ZAINUL AMRI,S.Ag.M.Ag', pass: '123456' },
-        { id: '129', nama: 'Dra.AMARNA', pass: '123456' },
-        { id: '130', nama: 'NURIBAN, S.Ag', pass: '123456' },
-        { id: '131', nama: 'RAJA SORAYA S.Ag', pass: '123456' },
-        { id: '132', nama: 'MASNAWATI HARAHAP, S.Ag', pass: '123456' },
-        { id: '133', nama: 'EPRIWAN, S.Ag', pass: '123456' },
-        { id: '134', nama: 'AMRIAH SIREGAR SH', pass: '123456' },
-        { id: '135', nama: 'SARINAWITA, SH', pass: '123456' },
-        { id: '136', nama: 'ISMAYUDDIN,S.Ag', pass: '123456' },
-        { id: '137', nama: 'RIDWAN PANGGABEAN S.P', pass: '123456' },
-        { id: '138', nama: 'FITRI RAHMAWATI HARAHAP, S.Pd', pass: '123456' },
-        { id: '139', nama: 'SARIFAH NURAINI S.Pd.I', pass: '123456' },
-        { id: '140', nama: 'WIWING DEVIKA,S.Pd', pass: '123456' },
-        { id: '141', nama: 'NURHABIBAH DMT, S.Ag', pass: '123456' },
-        { id: '142', nama: 'JULIATI, S.Ag', pass: '123456' },
-        { id: '143', nama: 'ERLINDA SARUMPAYET S.Ag', pass: '123456' },
-        { id: '144', nama: 'LIZA HANDAYANI ,S.Psi', pass: '123456' },
-        { id: '145', nama: 'SUPRIATI, S.Pd.I', pass: '123456' },
-        { id: '146', nama: 'FITRIANI POHAN, S.Pd', pass: '123456' },
-        { id: '147', nama: 'INDAH MAHDANI, S.Pd', pass: '123456' },
-        { id: '148', nama: 'KORRY WULANDARA, S.Pd', pass: '123456' },
-        { id: '149', nama: 'SUPIA SARI, SE', pass: '123456' },
-        { id: '150', nama: 'ISTIQOMAH SRI ASTUTI, S.Pd', pass: '123456' },
-        { id: '151', nama: 'ATIKA FAZRIANI, S.Pd', pass: '123456' },
-        { id: '152', nama: 'INTAN PERMATA SARI, S.Pd', pass: '123456' },
-        { id: '153', nama: 'NURHASANAH RAMBE S.Pd', pass: '123456' },
-        { id: '154', nama: 'AMALIA DYANI PUTRI LUBIS,S.Psi', pass: '123456' },
-        { id: '155', nama: 'NURUL WULANDA, S.Pd', pass: '123456' },
-        { id: '156', nama: 'DESSY NOVALIA, S.Pd', pass: '123456' },
-        { id: '157', nama: 'JOKO PRASETYO S.Pd', pass: '123456' },
-        { id: '158', nama: 'DESRIANTI NASUTION S.Pd', pass: '123456' },
-        { id: '159', nama: 'ELI RAMAHDANI, S.Pd', pass: '123456' },
-        { id: '160', nama: 'DAHLIA HARAHAP, S.Pd.I', pass: '123456' },
-        { id: '161', nama: 'EPI MEI LINDA SIREGAR, S.Pd', pass: '123456' },
-        { id: '162', nama: 'ISKANDAR, S.Pd', pass: '123456' },
-        { id: '163', nama: 'SHILATURRAHMAH, S.Pd', pass: '123456' },
-        { id: '164', nama: 'ANWAR EFENDI, S.Pd', pass: '123456' },
-        { id: '165', nama: 'LILA SURIANI, S.Pd.I', pass: '123456' },
-        { id: '166', nama: 'SITI SAHARA POHAN, S.Pd', pass: '123456' },
-        { id: '167', nama: 'HAYANI SIREGAR, S.Pd', pass: '123456' },
-        { id: '168', nama: 'PITRIANI SIBORO, S.Pd', pass: '123456' },
-        { id: '169', nama: 'MILWAN TAUFIK, S.Pd', pass: '123456' },
+        { id: '101', nama: 'MUSTAFA KAMAL NASUTION, S.Pd.I, M.Pd' },
+        { id: '102', nama: 'DARMAWATI SITORUS, M.Pd' },
+        { id: '103', nama: 'MUHAMMAD ARIF SIAGIAN, S.Pd' },
+        { id: '104', nama: 'SURYA PUTRA, S.Pd' },
+        { id: '105', nama: 'AHMAD SOLEH DONGORAN, S.Ag' },
+        { id: '106', nama: 'Dra. Hj. NURMAWATI, MA' },
+        { id: '107', nama: 'Dra.SYAFRI YUNITA' },
+        { id: '108', nama: 'Dra. NIRWANA' },
+        { id: '109', nama: 'SAMSIDAR RITONGA, S.Pd' },
+        { id: '110', nama: 'ELVIRA RAHMAINI, S.Pd' },
+        { id: '111', nama: 'SAANIM S.Pd' },
+        { id: '112', nama: 'NURBANI, M.Pd.I' },
+        { id: '113', nama: 'NURMAHAYA HARAHAP, S.Pd.I' },
+        { id: '114', nama: 'INATUL ZAMROH, S.Ag' },
+        { id: '115', nama: 'UMMI KALSUM, S.Pd.I' },
+        { id: '116', nama: 'MARHIDUN, S.Pd.I' },
+        { id: '117', nama: 'RIKA VALIANTI, S.Pd' },
+        { id: '118', nama: 'ROSITA, M.Pd' },
+        { id: '119', nama: 'LENNI MARIA, S.Pd' },
+        { id: '120', nama: 'MASDIANA NASUTION, S.Pd' },
+        { id: '121', nama: 'TRINAWATI, S.Ag' },
+        { id: '122', nama: 'FITRAWATI, S.Pd' },
+        { id: '123', nama: 'VIVI ARIANI LUBIS, S.Pd' },
+        { id: '124', nama: 'NURHASANAH NASUTION, S.Pd' },
+        { id: '125', nama: 'SRI HARIANI MANURUNG S.Pd' },
+        { id: '126', nama: 'SURATMIN, S.Pd' },
+        { id: '127', nama: 'AFRIYENNI, S.Pd' },
+        { id: '128', nama: 'H. ZAINUL AMRI,S.Ag.M.Ag' },
+        { id: '129', nama: 'Dra.AMARNA' },
+        { id: '130', nama: 'NURIBAN, S.Ag' },
+        { id: '131', nama: 'RAJA SORAYA S.Ag' },
+        { id: '132', nama: 'MASNAWATI HARAHAP, S.Ag' },
+        { id: '133', nama: 'EPRIWAN, S.Ag' },
+        { id: '134', nama: 'AMRIAH SIREGAR SH' },
+        { id: '135', nama: 'SARINAWITA, SH' },
+        { id: '136', nama: 'ISMAYUDDIN,S.Ag' },
+        { id: '137', nama: 'RIDWAN PANGGABEAN S.P' },
+        { id: '138', nama: 'FITRI RAHMAWATI HARAHAP, S.Pd' },
+        { id: '139', nama: 'SARIFAH NURAINI S.Pd.I' },
+        { id: '140', nama: 'WIWING DEVIKA,S.Pd' },
+        { id: '141', nama: 'NURHABIBAH DMT, S.Ag' },
+        { id: '142', nama: 'JULIATI, S.Ag' },
+        { id: '143', nama: 'ERLINDA SARUMPAYET S.Ag' },
+        { id: '144', nama: 'LIZA HANDAYANI ,S.Psi' },
+        { id: '145', nama: 'SUPRIATI, S.Pd.I' },
+        { id: '146', nama: 'FITRIANI POHAN, S.Pd' },
+        { id: '147', nama: 'INDAH MAHDANI, S.Pd' },
+        { id: '148', nama: 'KORRY WULANDARA, S.Pd' },
+        { id: '149', nama: 'SUPIA SARI, SE' },
+        { id: '150', nama: 'ISTIQOMAH SRI ASTUTI, S.Pd' },
+        { id: '151', nama: 'ATIKA FAZRIANI, S.Pd' },
+        { id: '152', nama: 'INTAN PERMATA SARI, S.Pd' },
+        { id: '153', nama: 'NURHASANAH RAMBE S.Pd' },
+        { id: '154', nama: 'AMALIA DYANI PUTRI LUBIS,S.Psi' },
+        { id: '155', nama: 'NURUL WULANDA, S.Pd' },
+        { id: '156', nama: 'DESSY NOVALIA, S.Pd' },
+        { id: '157', nama: 'JOKO PRASETYO S.Pd' },
+        { id: '158', nama: 'DESRIANTI NASUTION S.Pd' },
+        { id: '159', nama: 'ELI RAMAHDANI, S.Pd' },
+        { id: '160', nama: 'DAHLIA HARAHAP, S.Pd.I' },
+        { id: '161', nama: 'EPI MEI LINDA SIREGAR, S.Pd' },
+        { id: '162', nama: 'ISKANDAR, S.Pd' },
+        { id: '163', nama: 'SHILATURRAHMAH, S.Pd' },
+        { id: '164', nama: 'ANWAR EFENDI, S.Pd' },
+        { id: '165', nama: 'LILA SURIANI, S.Pd.I' },
+        { id: '166', nama: 'SITI SAHARA POHAN, S.Pd' },
+        { id: '167', nama: 'HAYANI SIREGAR, S.Pd' },
+        { id: '168', nama: 'PITRIANI SIBORO, S.Pd' },
+        { id: '169', nama: 'MILWAN TAUFIK, S.Pd' },
     ]
 
     const [step, setStep] = useState<'LOGIN' | 'SCAN'>('LOGIN')
     const [inputId, setInputId] = useState('')
-    const [inputPass, setInputPass] = useState('')
     const [selectedDurasi, setSelectedDurasi] = useState(1) // Default 1 JP
     const [guruLogin, setGuruLogin] = useState<{ id: string, nama: string } | null>(null)
 
@@ -151,13 +150,13 @@ export default function GuruPage() {
     }, [])
 
     const handleLogin = () => {
-        if (!inputId || !inputPass) return alert("Isi ID dan Password dulu Tadz!")
+        if (!inputId) return alert("Isi ID dulu Tadz!")
 
         // Cari Guru
-        const guru = daftarGuru.find(g => g.id === inputId && g.pass === inputPass)
+        const guru = daftarGuru.find(g => g.id === inputId)
 
         if (!guru) {
-            return alert("ID atau Password salah!")
+            return alert("ID tidak ditemukan!")
         }
 
         // Validasi Lokasi (DINONAKTIFKAN SEMENTARA)
@@ -254,16 +253,7 @@ export default function GuruPage() {
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                            <input
-                                type="password"
-                                placeholder="Masukkan Password"
-                                className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-green-500"
-                                value={inputPass}
-                                onChange={(e) => setInputPass(e.target.value)}
-                            />
-                        </div>
+                        {/* Password Field Removed */}
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Durasi Mengajar (JP)</label>
