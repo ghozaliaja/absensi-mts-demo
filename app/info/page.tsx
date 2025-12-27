@@ -22,7 +22,6 @@ export default function InfoPage() {
             const { data } = await supabase
                 .from('info_slides')
                 .select('*')
-                .eq('is_active', true)
                 .order('created_at', { ascending: false })
 
             if (data && data.length > 0) {
