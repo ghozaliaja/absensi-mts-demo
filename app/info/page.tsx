@@ -7,6 +7,7 @@ interface Slide {
     title: string
     type: 'text' | 'image'
     content: string
+    caption?: string // Tambahan field caption
     created_at: string
 }
 
@@ -88,7 +89,12 @@ export default function InfoPage() {
                     />
                     {/* Caption Overlay */}
                     <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-10 pt-32">
-                        <h1 className="text-4xl font-bold text-white drop-shadow-lg">{currentSlide.title}</h1>
+                        <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">{currentSlide.title}</h1>
+                        {currentSlide.caption && (
+                            <p className="text-2xl text-gray-200 drop-shadow-md max-w-4xl leading-relaxed">
+                                {currentSlide.caption}
+                            </p>
+                        )}
                     </div>
                 </div>
             ) : (

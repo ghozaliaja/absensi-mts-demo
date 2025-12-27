@@ -8,6 +8,7 @@ interface Slide {
     title: string
     type: 'text' | 'image'
     content: string
+    caption?: string // Tambahan untuk keterangan gambar
     is_active: boolean
     created_at: string
 }
@@ -20,7 +21,9 @@ export default function AdminSlidesPage() {
     const [title, setTitle] = useState('')
     const [type, setType] = useState<'text' | 'image'>('text')
     const [content, setContent] = useState('')
+    const [caption, setCaption] = useState('') // State untuk caption
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [uploading, setUploading] = useState(false) // State upload
 
     const fetchSlides = async () => {
         const { data } = await supabase
@@ -41,17 +44,47 @@ export default function AdminSlidesPage() {
 
         const { error } = await supabase
             .from('info_slides')
-            .insert([{ title, type, content, is_active: true }])
+            .insert([{ title, type, content, caption, is_active: true }])
 
         if (!error) {
             setTitle('')
             setContent('')
+            setCaption('')
             fetchSlides()
             alert('Slide berhasil ditambahkan!')
         } else {
             alert('Gagal menambah slide: ' + error.message)
         }
         setIsSubmitting(false)
+    }
+
+    // Fungsi Upload Gambar
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return
+
+        const file = e.target.files[0]
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Math.random()}.${fileExt}`
+        const filePath = `${fileName}`
+
+        setUploading(true)
+
+        try {
+            const { error: uploadError } = await supabase.storage
+                .from('slides') // Pastikan bucket 'slides' sudah dibuat di Supabase
+                .upload(filePath, file)
+
+            if (uploadError) {
+                throw uploadError
+            }
+
+            const { data } = supabase.storage.from('slides').getPublicUrl(filePath)
+            setContent(data.publicUrl) // Simpan URL ke state content
+        } catch (error: any) {
+            alert('Gagal upload gambar: ' + error.message)
+        } finally {
+            setUploading(false)
+        }
     }
 
     const handleDelete = async (id: number) => {
@@ -130,20 +163,49 @@ export default function AdminSlidesPage() {
                                     required
                                 />
                             ) : (
-                                <input
-                                    type="url"
-                                    value={content}
-                                    onChange={e => setContent(e.target.value)}
-                                    className="w-full bg-gray-800 border border-gray-700 p-2 rounded text-white focus:ring-2 focus:ring-green-500 outline-none transition-all placeholder-gray-500"
-                                    placeholder="https://example.com/foto.jpg"
-                                    required
-                                />
+                                <div className="space-y-4">
+                                    {/* Input File */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1 text-gray-300">Upload Gambar</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            className="w-full bg-gray-800 border border-gray-700 p-2 rounded text-white focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                                            disabled={uploading}
+                                        />
+                                        {uploading && <p className="text-yellow-400 text-xs mt-1">Sedang mengupload...</p>}
+                                    </div>
+
+                                    {/* Preview URL (Read Only) */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1 text-gray-300">URL Gambar (Otomatis)</label>
+                                        <input
+                                            type="url"
+                                            value={content}
+                                            readOnly
+                                            className="w-full bg-gray-900 border border-gray-800 p-2 rounded text-gray-500 cursor-not-allowed"
+                                            placeholder="URL akan muncul setelah upload"
+                                        />
+                                    </div>
+
+                                    {/* Input Caption */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1 text-gray-300">Keterangan / Berita (Opsional)</label>
+                                        <textarea
+                                            value={caption}
+                                            onChange={e => setCaption(e.target.value)}
+                                            className="w-full bg-gray-800 border border-gray-700 p-2 rounded h-24 text-white focus:ring-2 focus:ring-green-500 outline-none transition-all placeholder-gray-500"
+                                            placeholder="Tulis keterangan gambar di sini..."
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || uploading}
                             className="bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-500 disabled:opacity-50 w-full md:w-auto transition-colors shadow-lg shadow-green-900/20"
                         >
                             {isSubmitting ? 'Menyimpan...' : '💾 SIMPAN SLIDE'}
@@ -188,7 +250,7 @@ export default function AdminSlidesPage() {
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
