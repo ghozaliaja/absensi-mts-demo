@@ -77,12 +77,6 @@ export default function InfoPage() {
                 <h1 className="text-6xl font-bold mb-4">SELAMAT DATANG</h1>
                 <h2 className="text-4xl font-light">DI MTS NEGERI 1 LABUHAN BATU</h2>
                 <p className="mt-8 text-xl opacity-70">Pusat Informasi Digital</p>
-                {errorMsg && (
-                    <div className="mt-8 p-4 bg-red-900/50 border border-red-500 rounded text-red-200 max-w-lg">
-                        <p className="font-bold">⚠️ Error Debugging:</p>
-                        <p className="font-mono text-sm">{errorMsg}</p>
-                    </div>
-                )}
             </div>
         )
     }
@@ -110,10 +104,6 @@ export default function InfoPage() {
                                 {currentSlide.caption}
                             </p>
                         )}
-                        {/* DEBUG URL */}
-                        <p className="text-xs text-gray-500 mt-2 bg-black/50 p-1 rounded inline-block">
-                            Debug URL: {currentSlide.content}
-                        </p>
                     </div>
                 </div>
             ) : (

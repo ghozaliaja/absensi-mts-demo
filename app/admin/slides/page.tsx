@@ -24,6 +24,7 @@ export default function AdminSlidesPage() {
     const [caption, setCaption] = useState('') // State untuk caption
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [uploading, setUploading] = useState(false) // State upload
+    const [editingId, setEditingId] = useState<number | null>(null) // State untuk edit mode
 
     const fetchSlides = async () => {
         const { data } = await supabase
@@ -42,20 +43,49 @@ export default function AdminSlidesPage() {
         e.preventDefault()
         setIsSubmitting(true)
 
-        const { error } = await supabase
-            .from('info_slides')
-            .insert([{ title, type, content, caption, is_active: true }])
+        const slideData = { title, type, content, caption, is_active: true }
+
+        let error
+        if (editingId) {
+            // UPDATE MODE
+            const { error: updateError } = await supabase
+                .from('info_slides')
+                .update(slideData)
+                .eq('id', editingId)
+            error = updateError
+        } else {
+            // INSERT MODE
+            const { error: insertError } = await supabase
+                .from('info_slides')
+                .insert([slideData])
+            error = insertError
+        }
 
         if (!error) {
-            setTitle('')
-            setContent('')
-            setCaption('')
+            resetForm()
             fetchSlides()
-            alert('Slide berhasil ditambahkan!')
+            alert(editingId ? 'Slide berhasil diperbarui!' : 'Slide berhasil ditambahkan!')
         } else {
-            alert('Gagal menambah slide: ' + error.message)
+            alert('Gagal menyimpan slide: ' + error.message)
         }
         setIsSubmitting(false)
+    }
+
+    const resetForm = () => {
+        setTitle('')
+        setContent('')
+        setCaption('')
+        setType('text')
+        setEditingId(null)
+    }
+
+    const handleEdit = (slide: Slide) => {
+        setEditingId(slide.id)
+        setTitle(slide.title)
+        setType(slide.type)
+        setContent(slide.content)
+        setCaption(slide.caption || '')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     // Fungsi Upload Gambar
@@ -108,9 +138,21 @@ export default function AdminSlidesPage() {
                     <Link href="/admin" className="text-green-400 hover:text-green-300 hover:underline transition-colors">← Kembali ke Dashboard</Link>
                 </div>
 
-                {/* FORM TAMBAH SLIDE */}
-                <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl shadow-xl shadow-black/50 mb-8">
-                    <h2 className="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-green-400">Tambah Slide Baru</h2>
+                {/* FORM TAMBAH / EDIT SLIDE */}
+                <div className={`border p-6 rounded-xl shadow-xl shadow-black/50 mb-8 transition-colors ${editingId ? 'bg-blue-900/20 border-blue-500/50' : 'bg-gray-900 border-gray-800'}`}>
+                    <div className="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                        <h2 className={`text-xl font-bold ${editingId ? 'text-blue-400' : 'text-green-400'}`}>
+                            {editingId ? '✏️ Edit Slide' : 'Tambah Slide Baru'}
+                        </h2>
+                        {editingId && (
+                            <button
+                                onClick={resetForm}
+                                className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-gray-300"
+                            >
+                                Batal Edit
+                            </button>
+                        )}
+                    </div>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block text-sm font-bold mb-1 text-gray-300">Judul</label>
@@ -206,9 +248,9 @@ export default function AdminSlidesPage() {
                         <button
                             type="submit"
                             disabled={isSubmitting || uploading}
-                            className="bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-500 disabled:opacity-50 w-full md:w-auto transition-colors shadow-lg shadow-green-900/20"
+                            className={`px-6 py-2 rounded font-bold disabled:opacity-50 w-full md:w-auto transition-colors shadow-lg ${editingId ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-900/20' : 'bg-green-600 hover:bg-green-500 shadow-green-900/20'} text-white`}
                         >
-                            {isSubmitting ? 'Menyimpan...' : '💾 SIMPAN SLIDE'}
+                            {isSubmitting ? 'Menyimpan...' : (editingId ? '💾 SIMPAN PERUBAHAN' : '💾 SIMPAN SLIDE')}
                         </button>
                     </form>
                 </div>
@@ -236,6 +278,12 @@ export default function AdminSlidesPage() {
                                             className={`px-3 py-1 rounded text-xs font-bold transition-colors ${slide.is_active ? 'bg-green-900/30 text-green-400 border border-green-500/30 hover:bg-green-900/50' : 'bg-gray-700 text-gray-400 border border-gray-600 hover:bg-gray-600'}`}
                                         >
                                             {slide.is_active ? 'AKTIF' : 'NON-AKTIF'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleEdit(slide)}
+                                            className="bg-blue-900/20 text-blue-400 border border-blue-900/30 px-3 py-1 rounded text-xs font-bold hover:bg-blue-900/40 transition-colors"
+                                        >
+                                            EDIT
                                         </button>
                                         <button
                                             onClick={() => handleDelete(slide.id)}
