@@ -273,8 +273,8 @@ export default function GuruPage() {
                                         key={jp}
                                         onClick={() => setSelectedDurasi(jp)}
                                         className={`py-2 rounded-lg font-bold border-2 transition-all ${selectedDurasi === jp
-                                                ? 'bg-green-600 text-white border-green-600'
-                                                : 'bg-white text-gray-600 border-gray-200 hover:border-green-400'
+                                            ? 'bg-green-600 text-white border-green-600'
+                                            : 'bg-white text-gray-600 border-gray-200 hover:border-green-400'
                                             }`}
                                     >
                                         {jp} JP

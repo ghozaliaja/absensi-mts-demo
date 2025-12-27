@@ -6,7 +6,7 @@ export default function DashboardPage() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-800">Dashboard Guru</h2>
+                <h2 className="text-3xl font-bold text-gray-100">Dashboard Guru</h2>
                 <Link href="/scan">
                     <Button size="lg" className="bg-green-600 hover:bg-green-700">
                         📷 Mulai Scan Absensi
@@ -20,7 +20,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-lg">Total Siswa</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-blue-600">--</p>
+                        <p className="text-3xl font-bold text-blue-400">--</p>
                     </CardContent>
                 </Card>
 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-lg">Hadir Hari Ini</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-green-600">--</p>
+                        <p className="text-3xl font-bold text-green-400">--</p>
                     </CardContent>
                 </Card>
 
@@ -38,7 +38,7 @@ export default function DashboardPage() {
                         <CardTitle className="text-lg">Tidak Hadir</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold text-red-600">--</p>
+                        <p className="text-3xl font-bold text-red-400">--</p>
                     </CardContent>
                 </Card>
             </div>
@@ -48,7 +48,7 @@ export default function DashboardPage() {
                     <CardTitle>Aktivitas Terbaru</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-gray-500">Belum ada data absensi hari ini.</p>
+                    <p className="text-gray-400">Belum ada data absensi hari ini.</p>
                 </CardContent>
             </Card>
         </div>
