@@ -110,6 +110,10 @@ export default function InfoPage() {
                                 {currentSlide.caption}
                             </p>
                         )}
+                        {/* DEBUG URL */}
+                        <p className="text-xs text-gray-500 mt-2 bg-black/50 p-1 rounded inline-block">
+                            Debug URL: {currentSlide.content}
+                        </p>
                     </div>
                 </div>
             ) : (
