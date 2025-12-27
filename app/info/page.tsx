@@ -8,6 +8,7 @@ interface Slide {
     type: 'text' | 'image'
     content: string
     caption?: string // Tambahan field caption
+    duration: number // Durasi per slide
     created_at: string
 }
 
@@ -59,12 +60,15 @@ export default function InfoPage() {
     useEffect(() => {
         if (slides.length <= 1) return
 
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % slides.length)
-        }, 60000) // Ganti setiap 60 detik
+        const currentDuration = slides[currentIndex]?.duration || 60 // Default 60 detik
+        const intervalMs = currentDuration * 1000
 
-        return () => clearInterval(interval)
-    }, [slides])
+        const timer = setTimeout(() => {
+            setCurrentIndex((prev) => (prev + 1) % slides.length)
+        }, intervalMs)
+
+        return () => clearTimeout(timer)
+    }, [currentIndex, slides])
 
     // 3. Render Content
     if (loading) return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Loading...</div>
@@ -86,7 +90,12 @@ export default function InfoPage() {
     return (
         <div className="h-screen w-screen bg-black text-white overflow-hidden relative">
             {/* Progress Bar (Optional Visual Indicator) */}
-            <div className="absolute top-0 left-0 h-1 bg-green-500 z-50 animate-[width_60s_linear_infinite]" style={{ width: '100%' }}></div>
+            {/* Progress Bar (Dynamic Duration) */}
+            <div
+                key={currentIndex} // Reset animation on slide change
+                className="absolute top-0 left-0 h-1 bg-green-500 z-50 animate-progress"
+                style={{ animationDuration: `${slides[currentIndex]?.duration || 60}s` }}
+            ></div>
 
             {currentSlide.type === 'image' ? (
                 // TAMPILAN GAMBAR (Full Screen)
