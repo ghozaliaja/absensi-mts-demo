@@ -16,18 +16,28 @@ export default function InfoPage() {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
 
+    const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
     // 1. Fetch Slides
     useEffect(() => {
         const fetchSlides = async () => {
-            const { data } = await supabase
-                .from('info_slides')
-                .select('*')
-                .order('created_at', { ascending: false })
+            try {
+                const { data, error } = await supabase
+                    .from('info_slides')
+                    .select('*')
+                    .order('created_at', { ascending: false })
 
-            if (data && data.length > 0) {
-                setSlides(data as Slide[])
+                if (error) throw error
+
+                if (data && data.length > 0) {
+                    setSlides(data as Slide[])
+                }
+            } catch (err: any) {
+                console.error('Error fetching slides:', err)
+                setErrorMsg(err.message || 'Gagal mengambil data slide')
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
         }
 
         fetchSlides()
@@ -67,6 +77,12 @@ export default function InfoPage() {
                 <h1 className="text-6xl font-bold mb-4">SELAMAT DATANG</h1>
                 <h2 className="text-4xl font-light">DI MTS NEGERI 1 LABUHAN BATU</h2>
                 <p className="mt-8 text-xl opacity-70">Pusat Informasi Digital</p>
+                {errorMsg && (
+                    <div className="mt-8 p-4 bg-red-900/50 border border-red-500 rounded text-red-200 max-w-lg">
+                        <p className="font-bold">⚠️ Error Debugging:</p>
+                        <p className="font-mono text-sm">{errorMsg}</p>
+                    </div>
+                )}
             </div>
         )
     }
