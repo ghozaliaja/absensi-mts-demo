@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MTsN1 Labuhan Batu</string>
+    <string name="title_activity_main">MTsN1 Labuhan Batu</string>
+    <string name="package_name">com.absendigitalmts.guru</string>
+    <string name="custom_url_scheme">com.absendigitalmts.guru</string>
+</resources>

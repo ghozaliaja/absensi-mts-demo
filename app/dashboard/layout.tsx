@@ -11,7 +11,7 @@ export default function DashboardLayout({
             {/* Sidebar */}
             <aside className="w-64 bg-neutral-900 shadow-md">
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold text-blue-400">Absensi MTs</h1>
+                    <h1 className="text-2xl font-bold text-blue-400">MTsN1 Labuhan Batu</h1>
                 </div>
                 <nav className="mt-6">
                     <Link

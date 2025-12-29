@@ -201,7 +201,7 @@ export default function AdminPage() {
                         <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold tracking-wider text-gray-100">MONITORING KBM</h1>
+                        <h1 className="text-lg font-bold tracking-wider text-gray-100">MONITORING KBM MTsN1 Labuhan Batu</h1>
                         {/* Info Jam Ke Berapa */}
                         <div className="flex items-center gap-3">
                             <p className="text-xs font-bold text-yellow-400">

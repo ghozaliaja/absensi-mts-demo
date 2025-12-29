@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center">
-                    <CardTitle>Absensi MTs Login</CardTitle>
+                    <CardTitle>MTsN1 Labuhan Batu Login</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-4">

@@ -76,6 +76,11 @@ export default function GuruPage() {
         { id: 'LA', nama: 'LILA SURIANI, S.Pd.I' },
         { id: 'PH', nama: 'SITI SAHARA POHAN, S.Pd' },
         { id: 'HY', nama: 'HAYANI SIREGAR, S.Pd' },
+        { id: 'IS', nama: 'ISKANDAR, S.Pd' },
+        { id: 'DW', nama: 'DARMAWATI SITORUS, M.Pd' },
+        { id: 'MA', nama: 'MUHAMMAD ARIF SIAGIAN, S.Pd' },
+        { id: 'SP', nama: 'SURYA PUTRA, S.Pd' },
+        { id: 'MKN', nama: 'MUSTAFA KAMAL NASUTION, S.Pd.I, M.Pd' },
     ]
 
     const [step, setStep] = useState<'LOGIN' | 'SCAN'>('LOGIN')
@@ -154,15 +159,15 @@ export default function GuruPage() {
             return alert("ID tidak ditemukan!")
         }
 
-        // Validasi Lokasi (DINONAKTIFKAN SEMENTARA)
-        // if (distance === null) {
-        //     checkLocation()
-        //     return alert("Sedang mengambil lokasi... Tunggu sebentar.")
-        // }
+        // Validasi Lokasi (AKTIF)
+        if (distance === null) {
+            checkLocation()
+            return alert("Sedang mengambil lokasi... Tunggu sebentar.")
+        }
 
-        // if (distance > MAX_DISTANCE_METERS) {
-        //     return alert(`❌ KEJAUHAN! \n\nJarak Anda: ${Math.round(distance)} meter dari sekolah.\nBatas Maksimal: ${MAX_DISTANCE_METERS} meter.\n\nSilakan merapat ke sekolah dulu Tadz!`)
-        // }
+        if (distance > MAX_DISTANCE_METERS) {
+            return alert(`❌ KEJAUHAN! \n\nJarak Anda: ${Math.round(distance)} meter dari sekolah.\nBatas Maksimal: ${MAX_DISTANCE_METERS} meter.\n\nSilakan merapat ke sekolah dulu Tadz!`)
+        }
 
         // Lolos semua cek
         setGuruLogin(guru)
@@ -226,13 +231,13 @@ export default function GuruPage() {
                             <img src="/logo.png" alt="Logo" className="w-20 h-20 object-contain drop-shadow-md" />
                         </div>
                         <h1 className="text-2xl font-bold text-green-800">LOGIN GURU</h1>
-                        <p className="text-gray-500 text-sm">Absensi Digital MTs</p>
+                        <p className="text-gray-500 text-sm">MTsN1 Labuhan Batu</p>
                     </div>
 
-                    {/* Info Lokasi (MODE DEBUG) */}
-                    <div className="mb-6 p-3 rounded-lg text-sm text-center bg-blue-100 text-blue-700 border border-blue-200">
-                        <p className="font-bold">🚧 MODE UJI COBA</p>
-                        <p className="text-xs mt-1">Validasi Lokasi: NON-AKTIF</p>
+                    {/* Info Lokasi (AKTIF) */}
+                    <div className="mb-6 p-3 rounded-lg text-sm text-center bg-green-100 text-green-700 border border-green-200">
+                        <p className="font-bold">📍 VALIDASI LOKASI AKTIF</p>
+                        <p className="text-xs mt-1">Pastikan berada di area sekolah</p>
                         {distance !== null && <p className="text-[10px] mt-1 opacity-70">Jarak: {Math.round(distance)}m</p>}
                     </div>
 
@@ -277,9 +282,7 @@ export default function GuruPage() {
                         </button>
                     </div>
 
-                    <div className="mt-6 text-center">
-                        <Link href="/" className="text-gray-400 text-sm hover:text-green-600">Kembali ke Menu Utama</Link>
-                    </div>
+
                 </div>
             </div>
         )

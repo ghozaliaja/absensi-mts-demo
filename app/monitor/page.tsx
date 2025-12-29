@@ -26,16 +26,17 @@ export default function MonitorPage() {
                 {
                     event: 'INSERT',
                     schema: 'public',
-                    table: 'attendance',
+                    table: 'absensi_logs',
                 },
                 (payload) => {
                     console.log('New attendance:', payload);
                     const newRecord = payload.new;
                     // Update status to Green (True) for the specific class
-                    if (newRecord.class_id) {
+                    // Mapping: newRecord.kelas -> item.id (e.g., "7A")
+                    if (newRecord.kelas) {
                         setAttendanceStatus((prev) => ({
                             ...prev,
-                            [newRecord.class_id]: true,
+                            [newRecord.kelas]: true,
                         }));
                     }
                 }
@@ -50,7 +51,7 @@ export default function MonitorPage() {
     return (
         <div className="min-h-screen bg-gray-900 p-8 text-white">
             <h1 className="text-4xl font-bold mb-8 text-center text-blue-400">
-                MONITORING JADWAL PELAJARAN (LIVE)
+                MONITORING JADWAL PELAJARAN MTsN1 Labuhan Batu (LIVE)
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -61,8 +62,8 @@ export default function MonitorPage() {
                         <Card
                             key={item.id}
                             className={`border-2 transition-all duration-500 ${isPresent
-                                    ? 'bg-green-900/50 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'
-                                    : 'bg-red-900/20 border-red-800'
+                                ? 'bg-green-900/50 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'
+                                : 'bg-red-900/20 border-red-800'
                                 }`}
                         >
                             <CardHeader className="pb-2">
