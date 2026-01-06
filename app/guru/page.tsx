@@ -242,7 +242,7 @@ export default function GuruPage() {
                     // Fallback kalau kolom durasi_jp belum ada, coba kirim tanpa durasi
                     const { error: retryError } = await supabase
                         .from('absensi_logs')
-                        .insert([{ guru_nama: guruLogin.nama, kelas: qrText }])
+                        .insert([{ guru_nama: guruLogin.nama, kelas: `${qrText}|${finalDurasi}` }])
 
                     if (!retryError) {
                         alert(`✅ Berhasil Absen! (Note: Durasi JP mungkin tidak tersimpan karena database belum update)`)

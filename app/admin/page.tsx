@@ -79,7 +79,9 @@ export default function AdminPage() {
 
         // Cari log yang valid untuk kelas ini
         const logAktif = logs.find(log => {
-            if (log.kelas !== namaKelas) return false
+            // Parse Kelas & Durasi dari format "7A|2"
+            const [logKelas, logDurasiStr] = log.kelas.split('|')
+            if (logKelas !== namaKelas) return false
 
             // Cek apakah log dibuat HARI INI
             const logDate = new Date(log.created_at)
@@ -100,7 +102,9 @@ export default function AdminPage() {
             if (typeof jadwalLog.ke === 'string') return false // Log pas istirahat dianggap tidak valid untuk KBM
 
             const startKe = jadwalLog.ke as number
-            const durasi = log.durasi_jp || 1
+
+            // Ambil durasi dari kolom durasi_jp ATAU dari parsing nama kelas (logDurasiStr sudah diparse di atas)
+            const durasi = log.durasi_jp || (logDurasiStr ? parseInt(logDurasiStr) : 1)
 
             // HITUNG END KE (Dengan Logika "Tidak Boleh Nyebrang Istirahat")
             let validDuration = 0
