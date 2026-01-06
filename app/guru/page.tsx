@@ -6,10 +6,14 @@ import Link from 'next/link'
 import { getJadwalHariIni } from '@/lib/jadwal'
 
 export default function GuruPage() {
-    // 1. CONFIG: KOORDINAT SEKOLAH (MTS Negeri 1 Labuhan Batu)
-    const SCHOOL_LAT = 2.0964
+    // 1. CONFIG: KOORDINAT SEKOLAH
+    const SCHOOL_LAT = 2.0964 // MTS Negeri 1 (Induk)
     const SCHOOL_LNG = 99.8376
-    const MAX_DISTANCE_METERS = 100 // Radius toleransi (meter)
+
+    const BRANCH_LAT = 2.1139608835247765 // MTS Negeri 1 (Cabang 9J & 9K)
+    const BRANCH_LNG = 99.88775048364661
+
+    const MAX_DISTANCE_METERS = 500 // Radius toleransi (meter) diperluas
 
     // DATA GURU (ID & Password)
     const daftarGuru = [
@@ -132,8 +136,13 @@ export default function GuruPage() {
                 const { latitude, longitude } = position.coords
                 setUserLocation({ lat: latitude, lng: longitude })
 
-                const dist = calculateDistance(latitude, longitude, SCHOOL_LAT, SCHOOL_LNG)
-                setDistance(dist)
+                // Hitung jarak ke Sekolah Induk & Cabang
+                const distMain = calculateDistance(latitude, longitude, SCHOOL_LAT, SCHOOL_LNG)
+                const distBranch = calculateDistance(latitude, longitude, BRANCH_LAT, BRANCH_LNG)
+
+                // Ambil jarak terdekat
+                const minDist = Math.min(distMain, distBranch)
+                setDistance(minDist)
                 setIsCheckingLocation(false)
             },
             (error) => {
