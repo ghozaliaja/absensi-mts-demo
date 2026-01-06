@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import { getJadwalHariIni } from '@/lib/jadwal'
 
 export default function GuruPage() {
     // 1. CONFIG: KOORDINAT SEKOLAH (MTS Negeri 1 Labuhan Batu)
@@ -187,19 +188,55 @@ export default function GuruPage() {
             if (qrText) {
                 setScanResult(qrText)
 
-                // Kirim Data ke Supabase (Termasuk Durasi JP)
+
+                // LOGIKA BARU: Cek apakah durasi terpotong istirahat
+                let finalDurasi = selectedDurasi
+                const jadwal = getJadwalHariIni()
+                const now = new Date()
+                const jamMenit = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':')
+
+                const currentIndex = jadwal.findIndex(j => jamMenit >= j.start && jamMenit < j.end)
+
+                if (currentIndex !== -1) {
+                    const currentItem = jadwal[currentIndex]
+                    // Hanya validasi jika scan dilakukan saat jam pelajaran (bukan istirahat)
+                    if (typeof currentItem.ke === 'number') {
+                        let validDuration = 0
+                        let checkIndex = currentIndex
+
+                        // Loop cek ke depan apakah nabrak istirahat
+                        while (validDuration < selectedDurasi) {
+                            if (checkIndex >= jadwal.length) break
+                            const item = jadwal[checkIndex]
+
+                            // Kalau ketemu ISTIRAHAT, stop
+                            if (typeof item.ke === 'string') break
+
+                            validDuration++
+                            checkIndex++
+                        }
+
+                        // Jika durasi valid lebih kecil dari yang dipilih, potong!
+                        if (validDuration > 0 && validDuration < selectedDurasi) {
+                            finalDurasi = validDuration
+                            alert(`⚠️ DURASI DIPOTONG! \n\nAnda memilih ${selectedDurasi} JP, tapi terpotong waktu ISTIRAHAT.\nSistem otomatis mengubah menjadi ${finalDurasi} JP.\n\nSilakan scan lagi setelah istirahat untuk jam berikutnya.`)
+                        }
+                    }
+                }
+
+                // Kirim Data ke Supabase (Termasuk Durasi JP yang sudah divalidasi)
                 const { error: insertError } = await supabase
                     .from('absensi_logs')
                     .insert([
                         {
                             guru_nama: guruLogin.nama,
                             kelas: qrText,
-                            durasi_jp: selectedDurasi // Kirim durasi
+                            durasi_jp: finalDurasi // Pakai durasi hasil validasi
                         }
                     ])
 
                 if (!insertError) {
-                    alert(`✅ Berhasil! \n\n${guruLogin.nama}\nKelas: ${qrText}\nDurasi: ${selectedDurasi} JP\n\nData sudah masuk ke Monitor.`)
+                    alert(`✅ Berhasil! \n\n${guruLogin.nama}\nKelas: ${qrText}\nDurasi: ${finalDurasi} JP\n\nData sudah masuk ke Monitor.`)
                 } else {
                     console.error(insertError)
                     // Fallback kalau kolom durasi_jp belum ada, coba kirim tanpa durasi
@@ -210,7 +247,7 @@ export default function GuruPage() {
                     if (!retryError) {
                         alert(`✅ Berhasil Absen! (Note: Durasi JP mungkin tidak tersimpan karena database belum update)`)
                     } else {
-                        alert('❌ Gagal mengirim data!')
+                        alert(`❌ Gagal mengirim data! \n\nError: ${retryError?.message || insertError?.message}`)
                     }
                 }
             }
