@@ -16,7 +16,6 @@ export default function InfoPage() {
     const [slides, setSlides] = useState<Slide[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
-
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
     // 1. Fetch Slides
@@ -71,16 +70,42 @@ export default function InfoPage() {
     }, [currentIndex, slides])
 
     // 3. Render Content
-    if (loading) return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Loading...</div>
+    if (loading) return (
+        <div style={{
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: 'black',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '24px',
+            fontFamily: 'Arial, sans-serif'
+        }}>
+            Loading...
+        </div>
+    )
 
     // Default Slide if Empty
     if (slides.length === 0) {
         return (
-            <div className="h-screen w-screen bg-gradient-to-br from-green-800 to-black flex flex-col items-center justify-center text-white p-10 text-center">
-                <img src="/logo.png" alt="Logo" className="w-40 h-40 mb-8 animate-pulse" />
-                <h1 className="text-6xl font-bold mb-4">SELAMAT DATANG</h1>
-                <h2 className="text-4xl font-light">DI MTS NEGERI 1 LABUHAN BATU</h2>
-                <p className="mt-8 text-xl opacity-70">Pusat Informasi Digital</p>
+            <div style={{
+                height: '100vh',
+                width: '100vw',
+                background: 'linear-gradient(to bottom right, #166534, #000000)', // fallback for bg-gradient-to-br from-green-800 to-black
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                padding: '40px',
+                textAlign: 'center',
+                fontFamily: 'Arial, sans-serif'
+            }}>
+                <img src="/logo.png" alt="Logo" style={{ width: '160px', height: '160px', marginBottom: '32px' }} />
+                <h1 style={{ fontSize: '60px', fontWeight: 'bold', marginBottom: '16px', margin: 0 }}>SELAMAT DATANG</h1>
+                <h2 style={{ fontSize: '36px', fontWeight: '300', margin: 0 }}>DI MTS NEGERI 1 LABUHAN BATU</h2>
+                <p style={{ marginTop: '32px', fontSize: '20px', opacity: 0.7 }}>Pusat Informasi Digital</p>
             </div>
         )
     }
@@ -88,28 +113,76 @@ export default function InfoPage() {
     const currentSlide = slides[currentIndex]
 
     return (
-        <div className="h-screen w-screen bg-black text-white overflow-hidden relative">
-            {/* Progress Bar (Optional Visual Indicator) */}
-            {/* Progress Bar (Dynamic Duration) */}
+        <div style={{
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: 'black',
+            color: 'white',
+            overflow: 'hidden',
+            position: 'relative',
+            fontFamily: 'Arial, sans-serif'
+        }}>
+            {/* Progress Bar */}
             <div
-                key={currentIndex} // Reset animation on slide change
-                className="absolute top-0 left-0 h-1 bg-green-500 z-50 animate-progress"
-                style={{ animationDuration: `${slides[currentIndex]?.duration || 60}s` }}
+                key={currentIndex}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    height: '4px',
+                    backgroundColor: '#22c55e', // green-500
+                    zIndex: 50,
+                    width: '0%',
+                    animation: `progress ${slides[currentIndex]?.duration || 60}s linear forwards`
+                }}
             ></div>
+            <style jsx global>{`
+                @keyframes progress {
+                    from { width: 0%; }
+                    to { width: 100%; }
+                }
+            `}</style>
 
             {currentSlide.type === 'image' ? (
                 // TAMPILAN GAMBAR (Full Screen)
-                <div className="w-full h-full relative">
+                <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                     <img
                         src={currentSlide.content}
                         alt={currentSlide.title}
-                        className="w-full h-full object-contain bg-black"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            backgroundColor: 'black'
+                        }}
                     />
                     {/* Caption Overlay */}
-                    <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-10 pt-32">
-                        <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">{currentSlide.title}</h1>
+                    <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: '100%',
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
+                        padding: '40px',
+                        paddingTop: '128px'
+                    }}>
+                        <h1 style={{
+                            fontSize: '36px',
+                            fontWeight: 'bold',
+                            color: 'white',
+                            textShadow: '0 4px 6px rgba(0,0,0,0.5)',
+                            marginBottom: '8px',
+                            margin: 0
+                        }}>{currentSlide.title}</h1>
                         {currentSlide.caption && (
-                            <p className="text-2xl text-gray-200 drop-shadow-md max-w-4xl leading-relaxed">
+                            <p style={{
+                                fontSize: '24px',
+                                color: '#e5e7eb', // gray-200
+                                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                                maxWidth: '56rem',
+                                lineHeight: '1.625',
+                                margin: 0
+                            }}>
                                 {currentSlide.caption}
                             </p>
                         )}
@@ -117,15 +190,57 @@ export default function InfoPage() {
                 </div>
             ) : (
                 // TAMPILAN TEKS (Pengumuman)
-                <div className="w-full h-full flex flex-col items-center justify-center p-20 bg-gradient-to-br from-blue-900 to-slate-900 relative">
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '80px',
+                    background: 'linear-gradient(to bottom right, #1e3a8a, #0f172a)', // blue-900 to slate-900
+                    position: 'relative'
+                }}>
                     {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-10 bg-[url('/logo.png')] bg-center bg-no-repeat bg-contain blur-sm"></div>
+                    <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        opacity: 0.1,
+                        backgroundImage: "url('/logo.png')",
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'contain',
+                        filter: 'blur(4px)'
+                    }}></div>
 
-                    <div className="relative z-10 max-w-5xl text-center">
-                        <h1 className="text-6xl font-black text-yellow-400 mb-12 drop-shadow-md uppercase tracking-wide border-b-4 border-yellow-400/50 pb-4 inline-block">
+                    <div style={{
+                        position: 'relative',
+                        zIndex: 10,
+                        maxWidth: '64rem',
+                        textAlign: 'center'
+                    }}>
+                        <h1 style={{
+                            fontSize: '60px',
+                            fontWeight: '900',
+                            color: '#facc15', // yellow-400
+                            marginBottom: '48px',
+                            textShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            borderBottom: '4px solid rgba(250, 204, 21, 0.5)',
+                            paddingBottom: '16px',
+                            display: 'inline-block',
+                            margin: '0 0 48px 0'
+                        }}>
                             {currentSlide.title}
                         </h1>
-                        <div className="text-4xl leading-relaxed font-medium text-gray-100 whitespace-pre-wrap">
+                        <div style={{
+                            fontSize: '36px',
+                            lineHeight: '1.625',
+                            fontWeight: '500',
+                            color: '#f3f4f6', // gray-100
+                            whiteSpace: 'pre-wrap'
+                        }}>
                             {currentSlide.content}
                         </div>
                     </div>
@@ -133,9 +248,25 @@ export default function InfoPage() {
             )}
 
             {/* Footer / Clock */}
-            <div className="absolute bottom-4 right-6 text-right opacity-80 z-50">
-                <p className="text-2xl font-mono font-bold">{new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
-                <p className="text-sm uppercase">{new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <div style={{
+                position: 'absolute',
+                bottom: '16px',
+                right: '24px',
+                textAlign: 'right',
+                opacity: 0.8,
+                zIndex: 50
+            }}>
+                <p style={{
+                    fontSize: '24px',
+                    fontFamily: 'monospace',
+                    fontWeight: 'bold',
+                    margin: 0
+                }}>{new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p style={{
+                    fontSize: '14px',
+                    textTransform: 'uppercase',
+                    margin: 0
+                }}>{new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
         </div>
     )
