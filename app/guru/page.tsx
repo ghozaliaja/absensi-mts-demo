@@ -86,6 +86,8 @@ export default function GuruPage() {
         { id: 'MA', nama: 'MUHAMMAD ARIF SIAGIAN, S.Pd' },
         { id: 'SP', nama: 'SURYA PUTRA, S.Pd' },
         { id: 'MKN', nama: 'MUSTAFA KAMAL NASUTION, S.Pd.I, M.Pd' },
+        { id: 'SH', nama: 'Saidah Habibi' },
+        { id: 'IA', nama: 'Irsan Alsandi' },
     ]
 
     const [step, setStep] = useState<'LOGIN' | 'SCAN'>('LOGIN')
