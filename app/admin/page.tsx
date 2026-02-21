@@ -166,6 +166,9 @@ export default function AdminPage() {
                             <a href="/cetak-qr" target="_blank" className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded border border-white/20 transition-colors">
                                 🖨️ CETAK QR
                             </a>
+                            <a href="/admin/settings" className="text-[10px] bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-400 px-2 py-0.5 rounded border border-yellow-600/30 transition-colors font-bold">
+                                ⚙️ SETTINGS
+                            </a>
                         </div>
                     </div>
                 </div>

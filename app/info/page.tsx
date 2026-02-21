@@ -15,6 +15,7 @@ interface Slide {
 export default function InfoPage() {
     const [slides, setSlides] = useState<Slide[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
+    const [runningText, setRunningText] = useState('')
     const [loading, setLoading] = useState(true)
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
@@ -40,18 +41,39 @@ export default function InfoPage() {
             }
         }
 
-        fetchSlides()
+        const fetchSettings = async () => {
+            const { data } = await supabase
+                .from('app_settings')
+                .select('value')
+                .eq('key', 'running_text')
+                .single()
+            if (data) setRunningText(data.value)
+        }
 
-        // Realtime Subscription
-        const channel = supabase
+        fetchSlides()
+        fetchSettings()
+
+        // Realtime Subscription Slides
+        const slidesChannel = supabase
             .channel('public:info_slides')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'info_slides' }, () => {
                 fetchSlides()
             })
             .subscribe()
 
+        // Realtime Subscription Settings
+        const settingsChannel = supabase
+            .channel('public:app_settings')
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'app_settings', filter: 'key=eq.running_text' }, (payload) => {
+                if (payload.new && payload.new.value) {
+                    setRunningText(payload.new.value)
+                }
+            })
+            .subscribe()
+
         return () => {
-            supabase.removeChannel(channel)
+            supabase.removeChannel(slidesChannel)
+            supabase.removeChannel(settingsChannel)
         }
     }, [])
 
@@ -136,10 +158,45 @@ export default function InfoPage() {
                     animation: `progress ${slides[currentIndex]?.duration || 60}s linear forwards`
                 }}
             ></div>
+
+            {/* Running Text Banner */}
+            {runningText && (
+                <div style={{
+                    position: 'absolute',
+                    top: '4px', // Below progress bar
+                    left: 0,
+                    width: '100%',
+                    backgroundColor: '#facc15', // yellow-400
+                    color: 'black',
+                    zIndex: 60,
+                    padding: '12px 0',
+                    fontWeight: '900',
+                    fontSize: '28px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                }}>
+                    <div className="marquee-content" style={{ display: 'inline-block', paddingLeft: '100%' }}>
+                        {runningText} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {runningText} &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; {runningText}
+                    </div>
+                </div>
+            )}
+
             <style jsx global>{`
                 @keyframes progress {
                     from { width: 0%; }
                     to { width: 100%; }
+                }
+                .marquee-content {
+                    animation: marquee-anim 35s linear infinite;
+                    white-space: nowrap;
+                    will-change: transform;
+                }
+                @keyframes marquee-anim {
+                    from { transform: translateX(0); }
+                    to { transform: translateX(-100%); }
                 }
             `}</style>
 
