@@ -15,9 +15,9 @@ import { getJadwalHariIni, JadwalItem } from '@/lib/jadwal'
 export default function AdminPage() {
     // 1. CONFIG: 35 RUANGAN
     const daftarKelas = [
-        '7A', '7B', '7C', '7D', '7E', '7F', '7G', '7H', '7I', '7J', '7K',
-        '8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I',
-        '9A', '9B', '9C', '9D', '9E', '9F', '9G', '9H', '9I', '9J', '9K',
+        '7A', '7B', '7C', '7D', '7E', '7F', '7G', '7H', '7I', '7J',
+        '8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I', '8J', '8K',
+        '9A', '9B', '9C', '9D', '9E', '9F', '9G', '9H', '9I',
         'Ruang UKM', 'LAB IPA', 'PERPUSTAKAAN', 'LAB KOMPUTER'
     ]
 

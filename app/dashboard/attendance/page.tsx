@@ -27,12 +27,11 @@ export default function AttendancePage() {
                                 onChange={(e) => setSelectedClass(e.target.value)}
                             >
                                 <option value="">Pilih Kelas</option>
-                                <option value="7A">7A</option>
-                                <option value="7B">7B</option>
-                                <option value="8A">8A</option>
-                                <option value="8B">8B</option>
-                                <option value="9A">9A</option>
-                                <option value="9B">9B</option>
+                                {['7A', '7B', '7C', '7D', '7E', '7F', '7G', '7H', '7I', '7J',
+                                  '8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I', '8J', '8K',
+                                  '9A', '9B', '9C', '9D', '9E', '9F', '9G', '9H', '9I'].map(k => (
+                                    <option key={k} value={k}>{k}</option>
+                                ))}
                             </select>
                         </div>
                         <div>
