@@ -88,6 +88,7 @@ export default function GuruPage() {
         { id: 'MKN', nama: 'MUSTAFA KAMAL NASUTION, S.Pd.I, M.Pd' },
         { id: 'SH', nama: 'Saidah Habibi' },
         { id: 'IA', nama: 'Irsan Alsandi' },
+        { id: 'NZ', nama: 'Nurul Hajizah Pane' },
     ]
 
     const [step, setStep] = useState<'LOGIN' | 'SCAN'>('LOGIN')
